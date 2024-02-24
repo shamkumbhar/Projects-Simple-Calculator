@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .calculator {
+            background-color: #222;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            color: #fff;
+            position: relative; /* Added */
+        }
+        .calculator h1 {
+            margin-top: 0;
+        }
+        .calculator form {
+            margin-top: 20px;
+        }
+        .calculator input[type="number"], .calculator select {
+            padding: 10px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background-color: #444;
+            color: #fff;
+        }
+        .calculator input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .calculator input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        .calculator a {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #007bff;
+            font-size: 12px;
+            text-align: right;
+        }
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            font-size: 12px;
+            color: #ccc;
+        }
+        .name {
+            position: absolute; /* Changed */
+            top: 10px;
+            left: 10px;
+            font-size: 12px;
+            color: #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <h1>Simple Calculator</h1>
+        <div class="name">Pramod Badiger</div> <!-- Moved inside the calculator div -->
+        <form action="/calculate" method="post">
+            <input type="number" name="num1" step="any" required>
+            <select name="operation">
+                <option value="add">+</option>
+                <option value="subtract">-</option>
+                <option value="multiply">*</option>
+                <option value="divide">/</option>
+            </select>
+            <input type="number" name="num2" step="any" required>
+            <input type="submit" value="Calculate">
+        </form>
+        <a href="https://github.com/yourusername/yourproject" target="_blank">Project Link</a>
+        <a href="https://www.linkedin.com/in/yourlinkedinprofile" target="_blank">LinkedIn</a>
+    </div>
+    <div class="footer">Pramod Badiger</div>
+</body>
+</html>
