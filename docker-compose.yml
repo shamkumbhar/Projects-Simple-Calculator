@@ -5,9 +5,4 @@ services:
     image: pramod858/simple-calculator
     ports:
       - "5000:5000"
-    restart: always
 
-networks:
-  default:
-    external:
-      name: bridge
