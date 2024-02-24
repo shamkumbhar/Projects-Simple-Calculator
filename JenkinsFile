@@ -51,11 +51,4 @@ pipeline {
         }
 
     }
-    
-    // post {
-    //     always {
-    //         // Cleanup (optional)
-    //         sh 'docker rm -f your-container-name || true'
-    //     }
-    // }
 }
