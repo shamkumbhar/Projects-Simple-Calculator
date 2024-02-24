@@ -1,0 +1,61 @@
+pipeline {
+    agent any
+    
+    environment {
+        DOCKER_CREDENTIALS_ID = 'dockerHub'  // ID of your Docker Hub credentials in Jenkins
+        DOCKER_IMAGE_NAME = 'pramod858/simple-calculator'  // Name of your Docker image on Docker Hub
+        GITHUB_REPO_URL = 'https://github.com/Pramod858/Projects-Simple-Calculator.git'  // URL of your GitHub repository
+        DOCKERFILE_PATH = 'Dockerfile'  // Path to your Dockerfile in the GitHub repository
+    }
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                echo " Checkout Stage"
+                git branch: 'main', url: "${env.GITHUB_REPO_URL}"
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                 echo "Docker Image Building Stage"
+                script {
+                   
+                    docker.build(env.DOCKER_IMAGE_NAME, "--file ${env.DOCKERFILE_PATH} .")
+                }
+            }
+        }
+        
+        stage('Push Docker Image') {
+            steps {
+                echo "Docker Image is Pushing to Docker Hub"
+                withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    script {
+                        docker.withRegistry('https://index.docker.io/v1/', env.DOCKER_CREDENTIALS_ID) {
+                            docker.image(env.DOCKER_IMAGE_NAME).push()
+                        }
+                    }
+                }
+                echo "Docker Image Pushed to Docker Hub"
+            }
+        }
+        
+        stage('Deploy') {
+            steps {
+                echo "Deploying Started ..."
+                script {
+                    sh "docker-compose down && docker-compose up -d"
+                }
+                echo "Deployed Successfully."
+            }
+        }
+
+    }
+    
+    // post {
+    //     always {
+    //         // Cleanup (optional)
+    //         sh 'docker rm -f your-container-name || true'
+    //     }
+    // }
+}
