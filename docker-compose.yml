@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  simple-calculator:
+    image: pramod858/simple-calculator
+    ports:
+      - "5000:5000"
+    restart: always
+
+networks:
+  default:
+    external:
+      name: bridge
