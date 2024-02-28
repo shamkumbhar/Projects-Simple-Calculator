@@ -3,13 +3,14 @@ pipeline {
     
     environment {
         // SonarQube configuration
-        SONAR_TOKEN = credentials('SonarToken')  // ID of your SonarQube access token in Jenkins
+        // SONAR_TOKEN = credentials('SonarToken')  // ID of your SonarQube access token in Jenkins
         SONAR_PROJECT_KEY = 'Simple-Calculator'  // SonarQube project key
         SONAR_PROJECT_NAME = 'Simple-Calculator'  // Name of your SonarQube project
-        SONAR_PROJECT_VERSION = '1.0'  // Version of your project
-        SONAR_SOURCES = 'src'  // Source code directory
+        SONAR_PROJECT_VERSION = '2.0'  // Version of your project
+        SONAR_SOURCES = '.'  // Source code directory
         SONAR_LANGUAGE = 'py'  // Language of your project (Python)
-        SONAR_URL = "http://3.83.158.55:9000/"
+        SONAR_URL = "http://54.212.26.136:9000/"
+        SONAR_CREDENTIALS_ID = 'SonarQube'
         
         // Docker configuration
         DOCKER_CREDENTIALS_ID = 'dockerHub'  // ID of your Docker Hub credentials in Jenkins
@@ -33,15 +34,16 @@ pipeline {
             }
             steps {
                 echo "Running SonarQube analysis"
-                withCredentials([string(credentialsId: env.SONAR_TOKEN, variable: 'SONAR_LOGIN')]) {
-                    sh "${SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=${env.SONAR_PROJECT_KEY} \
+                // withCredentials([string(credentialsId: env.SONAR_TOKEN, variable: 'SONAR_LOGIN')]) {
+                withCredentials([usernamePassword(credentialsId: env.SONAR_CREDENTIALS_ID, usernameVariable: 'SONAR_USERNAME', passwordVariable: 'SONAR_PASSWORD')]) {
+                    sh "${env.SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=${env.SONAR_PROJECT_KEY} \
                         -Dsonar.projectName=${env.SONAR_PROJECT_NAME} \
                         -Dsonar.projectVersion=${env.SONAR_PROJECT_VERSION} \
-                        -Dsonar.url=${env.SONAR_URL} \
                         -Dsonar.sources=${env.SONAR_SOURCES} \
                         -Dsonar.language=${env.SONAR_LANGUAGE} \
-                        -Dsonar.login=${env.SONAR_LOGIN}"
-                    echo "This is SoanrQube Analysis"
+                        -Dsonar.login=${env.SONAR_USERNAME} \
+                        -Dsonar.password=${env.SONAR_PASSWORD} \
+                        -Dsonar.host.url=${env.SONAR_URL}"
                 }
             }
         }
