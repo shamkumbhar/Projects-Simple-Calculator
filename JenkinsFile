@@ -9,7 +9,7 @@ pipeline {
         SONAR_PROJECT_VERSION = '2.0'  // Version of your project
         SONAR_SOURCES = '.'  // Source code directory
         SONAR_LANGUAGE = 'py'  // Language of your project (Python)
-        SONAR_URL = "http://54.212.26.136:9000/"
+        SONAR_URL = "http://54.160.132.96:9000/"
         SONAR_CREDENTIALS_ID = 'SonarQube'
         
         // Docker configuration
