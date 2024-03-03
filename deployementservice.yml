@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: calculatorserver
-        image: thetips4you/nodeapp:latest
+        image: pramod858/simple-calculator
         ports:
         - containerPort: 5000
         
