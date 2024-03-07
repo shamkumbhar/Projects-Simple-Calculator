@@ -3,7 +3,6 @@ pipeline {
     
     environment {
         // SonarQube configuration
-        // SONAR_TOKEN = credentials('SonarToken')  // ID of your SonarQube access token in Jenkins
         SONAR_PROJECT_KEY = 'Simple-Calculator'  // SonarQube project key
         SONAR_PROJECT_NAME = 'Simple-Calculator'  // Name of your SonarQube project
         SONAR_PROJECT_VERSION = '2.0'  // Version of your project
@@ -25,7 +24,6 @@ pipeline {
             }
         }
         
-
         stage('SonarQube Analysis') {
             environment {
                 SCANNER_HOME = tool 'SonarScanner'
@@ -42,8 +40,6 @@ pipeline {
             }
         }
         
-        
-        
         stage('Build Docker Image') {
             steps {
                  echo "Docker Image Building Stage"
@@ -53,27 +49,32 @@ pipeline {
                 }
             }
         }
+
+        stage('Push Docker Image') {
+            steps {
+                echo "Docker Image is Pushing to Docker Hub"
+                withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    script {
+                        docker.withRegistry('https://index.docker.io/v1/', env.DOCKER_CREDENTIALS_ID) {
+                            docker.image(env.DOCKER_IMAGE_NAME).push()
+                        }
+                    }
+                }
+                echo "Docker Image Pushed to Docker Hub"
+            }
+        }
         
-        stage('K8S Deploy.') {
+        stage('K8S Deploy') {
             steps {
                 echo "Deploying to K8S..."
                 script {
                     withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'K8S', namespace: '', restrictKubeConfigAccess: false, serverUrl: '') {
                     sh "kubectl apply -f deployementservice.yml"
                     }
+                echo " Deployed Successfully."
                 }
             }
         }
         
-        stage('Deploy') {
-            steps {
-                echo "Deploying Started ..."
-                script {
-                    sh "docker-compose down && docker-compose up -d"
-                }
-                echo "Deployed Successfully.."
-            }
-        }
-
     }
 }
