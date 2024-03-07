@@ -1,39 +1,42 @@
-
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: simplecalculatorapp-deployment
   labels:
-    app: calculatorapp
+    app: simple-calculator-app
+  name: simple-calculator-app
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
-      app: calculatorapp
+      app: simple-calculator-app
   template:
     metadata:
       labels:
-        app: calculatorapp 
+        app: simple-calculator-app
     spec:
       containers:
-      - name: calculatorserver
-        image: pramod858/simple-calculator
+      - name: my-simple-calculator-app
+        image: pramod858/simple-calculator:latest
+        imagePullPolicy: Always
         ports:
         - containerPort: 5000
-        
-        
+          name: http
+          protocol: TCP
+# service type loadbalancer       
 ---
-
 apiVersion: v1
 kind: Service
 metadata:
-  name: calculatorapp-service
+  labels:
+    app: simple-calculator-app
+    k8s-app: simple-calculator-app
+  name: simple-calculator-app
 spec:
-  selector:
-    app: calculatorapp 
-  type: LoadBalancer
   ports:
-  - protocol: TCP
-    port: 5000
+  - name: http
+    port: 80
+    protocol: TCP
     targetPort: 5000
-    nodePort: 5000
+  type: LoadBalancer
+  selector:
+    app: simple-calculator-app
