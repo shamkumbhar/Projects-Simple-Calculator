@@ -9,8 +9,6 @@ pipeline {
         SONAR_PROJECT_VERSION = '2.0'  // Version of your project
         SONAR_SOURCES = '.'  // Source code directory
         SONAR_LANGUAGE = 'py'  // Language of your project (Python)
-        SONAR_URL = "http://54.160.132.96:9000/"
-        SONAR_CREDENTIALS_ID = 'SonarQube'
         
         // Docker configuration
         DOCKER_CREDENTIALS_ID = 'dockerHub'  // ID of your Docker Hub credentials in Jenkins
@@ -34,16 +32,12 @@ pipeline {
             }
             steps {
                 echo "Running SonarQube analysis"
-                // withCredentials([string(credentialsId: env.SONAR_TOKEN, variable: 'SONAR_LOGIN')]) {
-                withCredentials([usernamePassword(credentialsId: env.SONAR_CREDENTIALS_ID, usernameVariable: 'SONAR_USERNAME', passwordVariable: 'SONAR_PASSWORD')]) {
+                withSonarQubeEnv('SonarServer') {
                     sh "${env.SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=${env.SONAR_PROJECT_KEY} \
                         -Dsonar.projectName=${env.SONAR_PROJECT_NAME} \
                         -Dsonar.projectVersion=${env.SONAR_PROJECT_VERSION} \
                         -Dsonar.sources=${env.SONAR_SOURCES} \
-                        -Dsonar.language=${env.SONAR_LANGUAGE} \
-                        -Dsonar.login=${env.SONAR_USERNAME} \
-                        -Dsonar.password=${env.SONAR_PASSWORD} \
-                        -Dsonar.host.url=${env.SONAR_URL}"
+                        -Dsonar.language=${env.SONAR_LANGUAGE}"
                 }
             }
         }
@@ -60,17 +54,14 @@ pipeline {
             }
         }
         
-        stage('Push Docker Image') {
+        stage('K8S Deploy.') {
             steps {
-                echo "Docker Image is Pushing to Docker Hub"
-                withCredentials([usernamePassword(credentialsId: env.DOCKER_CREDENTIALS_ID, usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    script {
-                        docker.withRegistry('https://index.docker.io/v1/', env.DOCKER_CREDENTIALS_ID) {
-                            docker.image(env.DOCKER_IMAGE_NAME).push()
-                        }
+                echo "Deploying to K8S..."
+                script {
+                    withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'K8S', namespace: '', restrictKubeConfigAccess: false, serverUrl: '') {
+                    sh "kubectl apply -f deployementservice.yml"
                     }
                 }
-                echo "Docker Image Pushed to Docker Hub"
             }
         }
         
