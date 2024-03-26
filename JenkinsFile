@@ -69,7 +69,7 @@ pipeline {
                 echo "Deploying to K8S..."
                 script {
                     withKubeConfig(caCertificate: '', clusterName: '', contextName: '', credentialsId: 'K8S', namespace: '', restrictKubeConfigAccess: false, serverUrl: '') {
-                    sh "kubectl apply -f deployementservice.yml"
+                    sh "kubectl apply -f ./K8S-manifest/deployementservice.yml"
                     }
                 echo " Deployed Successfully."
                 }
