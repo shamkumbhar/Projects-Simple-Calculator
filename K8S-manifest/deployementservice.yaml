@@ -16,11 +16,10 @@ spec:
     spec:
       containers:
       - name: my-simple-calculator-app
-        # image: pramod858/simple-calculator:latest
-        image: pramod858/boardshack:v2
+        image: pramod858/simple-calculator:latest
         imagePullPolicy: Always
         ports:
-        - containerPort: 8080
+        - containerPort: 5000
           name: http
           protocol: TCP
 # service type loadbalancer       
@@ -37,7 +36,7 @@ spec:
   - name: http
     port: 80
     protocol: TCP
-    targetPort: 8080
+    targetPort: 5000
   type: LoadBalancer
   selector:
     app: simple-calculator-app
