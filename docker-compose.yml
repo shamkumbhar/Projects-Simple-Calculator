@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   simple-calculator:
-    image: pramod858/simple-calculator
+    image: shamraokumbhar/calculator-app:latest
     ports:
       - "5000:5000"
 
